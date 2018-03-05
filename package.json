@@ -1,0 +1,25 @@
+{
+  "name": "git-graft",
+  "version": "0.0.1",
+  "description": "Program to quickly cherry-pick all commits from a git branch",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jcolag/git-graft.git"
+  },
+  "keywords": [
+    "git",
+    "cherry",
+    "pick",
+    "branch"
+  ],
+  "author": "John Colagioia",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/jcolag/git-graft/issues"
+  },
+  "homepage": "https://github.com/jcolag/git-graft#readme"
+}
