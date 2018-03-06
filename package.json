@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/jcolag/git-graft/issues"
   },
-  "homepage": "https://github.com/jcolag/git-graft#readme"
+  "homepage": "https://github.com/jcolag/git-graft#readme",
+  "dependencies": {
+    "nodegit": "^0.21.0"
+  }
 }
