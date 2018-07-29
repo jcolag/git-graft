@@ -38,7 +38,7 @@ function reportBranches() {
     return;
   }
   clearInterval(intervalId);
-  let keys = Object.keys(branches);
+  let keys = Object.keys(branches).filter(b => b.indexOf("remotes") < 0);
   for (let k = 0; k < keys.length; k++) {
     let branch = keys[k];
     let commits = branches[branch];
