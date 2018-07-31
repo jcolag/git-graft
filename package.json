@@ -24,6 +24,6 @@
   "homepage": "https://github.com/jcolag/git-graft#readme",
   "dependencies": {
     "command-line-args": "^5.0.2",
-    "nodegit": "^0.21.0"
+    "nodegit": "^0.22.2"
   }
 }
