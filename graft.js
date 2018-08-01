@@ -1,5 +1,23 @@
-var Git = require("nodegit");
+const Git = require("nodegit");
+const commandLineArgs = require('command-line-args');
 
+const optionDefinitions = [
+  { name: 'source', alias: 's', type: String },
+  { name: 'target', alias: 't', type: String },
+];
+const options = commandLineArgs(optionDefinitions);
+
+if (!options.hasOwnProperty('source')) {
+  // Can't function without the branches
+  return;
+}
+if (!options.hasOwnProperty('target')) {
+  // Can't function without the branches
+  return;
+}
+
+const sourceBranch = options.source;
+const targetBranch = options.target;
 let branches = {};
 let semaphore = 0;
 let intervalId = 0;
