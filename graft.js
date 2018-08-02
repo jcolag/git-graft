@@ -9,10 +9,12 @@ const options = commandLineArgs(optionDefinitions);
 
 if (!options.hasOwnProperty('source')) {
   // Can't function without the branches
+  listBranches();
   return;
 }
 if (!options.hasOwnProperty('target')) {
   // Can't function without the branches
+  listBranches();
   return;
 }
 
@@ -71,3 +73,23 @@ function reportBranches() {
     }
   }
 }
+
+function listBranches() {
+  let currentBranch = "";
+  let names = Git.Repository.open(".")
+    .then(function(repo) {
+      repo.getCurrentBranch()
+        .then(function(ref) {
+         currentBranch = ref.name();
+      });
+    return repo.getReferenceNames(Git.Reference.TYPE.LISTALL);
+  });
+  names.then((nn) => {
+    console.log("Available branches:");
+    for (let i = 0; i < nn.length; i++) {
+      let isCurrent = nn[i] === currentBranch ? " *" : "";
+      console.log(`\t${nn[i]}${isCurrent}`);
+    }
+  });
+}
+
