@@ -81,9 +81,9 @@ function listBranches() {
       repo.getCurrentBranch()
         .then(function(ref) {
          currentBranch = ref.name();
-      });
-    return repo.getReferenceNames(Git.Reference.TYPE.LISTALL);
-  });
+       });
+      return repo.getReferenceNames(Git.Reference.TYPE.LISTALL);
+    });
   names.then((nn) => {
     console.log("Available branches:");
     for (let i = 0; i < nn.length; i++) {
