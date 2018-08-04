@@ -58,19 +58,20 @@ function reportBranches() {
     return;
   }
   clearInterval(intervalId);
-  let keys = Object.keys(branches).filter(b => b.indexOf("remotes") < 0);
-  for (let k = 0; k < keys.length; k++) {
-    let branch = keys[k];
-    let commits = branches[branch];
-    console.log(`\n[[Branch:  ${branch}]]`);
-    for (let c = 0; c < commits.length; c++) {
-      let commit = commits[c];
-      console.log(`\ncommit\t${commit.sha()}`);
-      var author = commit.author();
-      console.log(`Author:\t${author.name()} <${author.email()}>`);
-      console.log(`Date:\t${commit.date()}`);
-      console.log(`\n\t${commit.message().trim()}`);
+  const tarCommits = branches[targetBranch].map(c => c.sha());
+  const srcCommits = branches[sourceBranch];
+  console.log(`\n[[Unique to branch ${sourceBranch}]]`);
+  for (let c = 0; c < srcCommits.length; c++) {
+    const commit = srcCommits[c];
+    const sha = commit.sha();
+    const author = commit.author();
+    if (tarCommits.indexOf(sha)) {
+      continue;
     }
+    console.log(`\ncommit\t${sha}`);
+    console.log(`Author:\t${author.name()} <${author.email()}>`);
+    console.log(`Date:\t${commit.date()}`);
+    console.log(`\n\t${commit.message().trim()}`);
   }
 }
 
