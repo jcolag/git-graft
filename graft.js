@@ -36,18 +36,18 @@ Git.Repository.open(".")
         let name = nn[ni];
         branches[name] = [];
         try {
-        repo.getBranchCommit(name).then(function(firstCommit) {
-          let history = firstCommit.history();
-          let count = 0;
-          history.on("commit", function(commit) {
-            branches[name].unshift(commit);
+          repo.getBranchCommit(name).then(function(firstCommit) {
+            let history = firstCommit.history();
+            let count = 0;
+            history.on("commit", function(commit) {
+              branches[name].unshift(commit);
+            });
+            history.start();
+          }).then(function() {
+            --semaphore;
           });
-          history.start();
-        }).then(function() {
-          --semaphore;
-        });
         } catch(e) {
-        console.log(e);
+          console.log(e);
         }
       }
     });
