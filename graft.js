@@ -12,44 +12,47 @@ if (!options.hasOwnProperty('source')) {
   listBranches();
   return;
 }
-if (!options.hasOwnProperty('target')) {
-  // Can't function without the branches
-  listBranches();
-  return;
-}
 
 const sourceBranch = options.source;
-const targetBranch = options.target;
+let targetBranch = Object.hasOwnProperty('target') ? options.target : '';
 let branches = {};
 let semaphore = 0;
 let intervalId = 0;
 
 Git.Repository.open(".")
   .then(function(repo) {
-    return { names: repo.getReferenceNames(Git.Reference.TYPE.LISTALL), repo };
+    return {
+      names: repo.getReferenceNames(Git.Reference.TYPE.LISTALL),
+      repo
+    };
   }).then(function(r) {
-    let { names, repo } = r;
-    names.then(function(nn) {
-      semaphore = nn.length;
-      intervalId = setInterval(reportBranches, 100);
-      for (let ni = 0; ni < nn.length; ni++) {
-        let name = nn[ni];
-        branches[name] = [];
-        try {
-          repo.getBranchCommit(name).then(function(firstCommit) {
-            let history = firstCommit.history();
-            let count = 0;
-            history.on("commit", function(commit) {
-              branches[name].unshift(commit);
-            });
-            history.start();
-          }).then(function() {
-            --semaphore;
-          });
-        } catch(e) {
-          console.log(e);
-        }
+    let { names, branch, repo } = r;
+    repo.getCurrentBranch().then((branch) => {
+      if (!targetBranch) {
+        targetBranch = branch;
       }
+      names.then(function(nn) {
+        semaphore = nn.length;
+        intervalId = setInterval(reportBranches, 100);
+        for (let ni = 0; ni < nn.length; ni++) {
+          let name = nn[ni];
+          branches[name] = [];
+          try {
+            repo.getBranchCommit(name).then(function(firstCommit) {
+              let history = firstCommit.history();
+              let count = 0;
+              history.on("commit", function(commit) {
+                branches[name].unshift(commit);
+              });
+             history.start();
+            }).then(function() {
+              --semaphore;
+            });
+          } catch(e) {
+            console.log(e);
+          }
+        }
+      });
     });
   });
 
