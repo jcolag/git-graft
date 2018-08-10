@@ -10,11 +10,10 @@ const options = commandLineArgs(optionDefinitions);
 if (!options.hasOwnProperty('source')) {
   // Can't function without the branches
   listBranches();
-  return;
 }
 
 const sourceBranch = options.source;
-let targetBranch = Object.hasOwnProperty('target') ? options.target : '';
+let targetBranch = options.hasOwnProperty('target') ? options.target : '';
 let branches = {};
 let semaphore = 0;
 let intervalId = 0;
@@ -26,7 +25,7 @@ Git.Repository.open(".")
       repo
     };
   }).then(function(r) {
-    let { names, branch, repo } = r;
+    let { names, repo } = r;
     repo.getCurrentBranch().then((branch) => {
       if (!targetBranch) {
         targetBranch = branch;
@@ -40,7 +39,6 @@ Git.Repository.open(".")
           try {
             repo.getBranchCommit(name).then(function(firstCommit) {
               let history = firstCommit.history();
-              let count = 0;
               history.on("commit", function(commit) {
                 branches[name].unshift(commit);
               });
@@ -94,6 +92,7 @@ function listBranches() {
       let isCurrent = nn[i] === currentBranch ? " *" : "";
       console.log(`\t${nn[i]}${isCurrent}`);
     }
+    process.exit();
   });
 }
 
