@@ -30,29 +30,33 @@ Git.Repository.open(".")
       if (!targetBranch) {
         targetBranch = branch;
       }
-      names.then(function(nn) {
-        semaphore = nn.length;
-        intervalId = setInterval(reportBranches, 100);
-        for (let ni = 0; ni < nn.length; ni++) {
-          let name = nn[ni];
-          branches[name] = [];
-          try {
-            repo.getBranchCommit(name).then(function(firstCommit) {
-              let history = firstCommit.history();
-              history.on("commit", function(commit) {
-                branches[name].unshift(commit);
-              });
-             history.start();
-            }).then(function() {
-              --semaphore;
-            });
-          } catch(e) {
-            console.log(e);
-          }
-        }
-      });
+        getCommits(repo, names);
     });
   });
+
+function getCommits(repo, names) {
+  names.then(function(nn) {
+    semaphore = nn.length;
+    intervalId = setInterval(reportBranches, 100);
+    for (let ni = 0; ni < nn.length; ni++) {
+      let name = nn[ni];
+      branches[name] = [];
+      try {
+        repo.getBranchCommit(name).then((firstCommit) => {
+          let history = firstCommit.history();
+          history.on("commit", function(commit) {
+            branches[name].unshift(commit);
+          });
+          history.start();
+        }).then(function() {
+          --semaphore;
+        });
+      } catch(e) {
+        console.log(e);
+      }
+    }
+  });
+}
 
 function reportBranches() {
   if (semaphore > 0) {
