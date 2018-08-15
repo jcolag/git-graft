@@ -45,7 +45,7 @@ Git.Repository.open(".")
 function getCommits(repo, names) {
   names.then(function(nn) {
     semaphore = nn.length;
-    intervalId = setInterval(reportBranches, 100);
+    intervalId = setInterval(pickAlongBranch, 100, repo);
     for (let ni = 0; ni < nn.length; ni++) {
       let name = nn[ni];
       branches[name] = [];
@@ -64,6 +64,34 @@ function getCommits(repo, names) {
       }
     }
   });
+}
+
+async function pickAlongBranch(repo) {
+  if (semaphore > 0) {
+    return;
+  }
+  clearInterval(intervalId);
+  const tarCommits = branches[targetBranch].map(c => c.sha());
+  const srcCommits = branches[sourceBranch];
+  const options = new Git.CherrypickOptions();
+  for (let c = 0; c < srcCommits.length; c++) {
+    const commit = srcCommits[c];
+    const sha = commit.sha();
+    let cherryPickDone = false;
+    if (tarCommits.indexOf(sha)) {
+      continue;
+    }
+    repo.getCommit(sha).then((commit) => {
+      Git.Cherrypick.cherrypick(repo, commit, options).then((r) => {
+        let status = r < 0 ? "failed" : "succeeded";
+        console.log(`${sha} ... ${status}`);
+        cherryPickDone = true;
+      });
+    });
+    while (!cherryPickDone) {
+      await sleep(100);
+    }
+  }
 }
 
 function reportBranches() {
