@@ -94,28 +94,6 @@ async function pickAlongBranch(repo) {
   }
 }
 
-function reportBranches() {
-  if (semaphore > 0) {
-    return;
-  }
-  clearInterval(intervalId);
-  const tarCommits = branches[targetBranch].map(c => c.sha());
-  const srcCommits = branches[sourceBranch];
-  console.log(`\n[[Unique to branch ${sourceBranch}]]`);
-  for (let c = 0; c < srcCommits.length; c++) {
-    const commit = srcCommits[c];
-    const sha = commit.sha();
-    const author = commit.author();
-    if (tarCommits.indexOf(sha)) {
-      continue;
-    }
-    console.log(`\ncommit\t${sha}`);
-    console.log(`Author:\t${author.name()} <${author.email()}>`);
-    console.log(`Date:\t${commit.date()}`);
-    console.log(`\n\t${commit.message().trim()}`);
-  }
-}
-
 function listBranches() {
   let currentBranch = "";
   let names = Git.Repository.open(".")
