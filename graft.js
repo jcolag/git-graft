@@ -30,14 +30,14 @@ Git.Repository.open(".")
       if (!targetBranch) {
         targetBranch = branch;
       }
-      if (targetBranch !== branch) {
+      if (targetBranch === branch) {
+        getCommits(repo, names);
+      } else {
         repo.getReference(targetBranch).then((ref) => {
           repo.checkoutRef(ref).then(() => {
             getCommits(repo, names);
           });
         });
-      } else {
-        getCommits(repo, names);
       }
     });
   });
