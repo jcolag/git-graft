@@ -83,6 +83,8 @@ async function pickAlongBranch(repo) {
     }
     repo.getCommit(sha).then((commit) => {
       Git.Cherrypick.cherrypick(repo, commit, options).then((r) => {
+        // if failed, should stash the current commit to restart
+        // after the user has fixed the issue
         let status = r < 0 ? "failed" : "succeeded";
         console.log(`${sha} ... ${status}`);
         cherryPickDone = true;
